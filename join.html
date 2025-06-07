@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ديوانية الألعاب - الانضمام للعبة</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">🚀 الانضمام للعبة</h1>
+        </header>
+
+        <main class="main-content">
+            <!-- Join Form Section -->
+            <div id="joinSection" class="card join-card">
+                <h2>أدخل معلوماتك للانضمام</h2>
+                
+                <form id="joinForm">
+                    <div class="form-group">
+                        <label for="gameCode">🎯 رمز اللعبة:</label>
+                        <input type="text" id="gameCode" placeholder="مثال: ABC123" required maxlength="6" style="text-transform: uppercase;">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nickname">👤 اسم اللاعب:</label>
+                        <input type="text" id="nickname" placeholder="اكتب اسمك هنا" required maxlength="20">
+                    </div>
+
+                    <div class="form-group">
+                        <label>😊 اختر رمزك التعبيري:</label>
+                        <div class="emoji-picker">
+                            <div class="emoji-grid">
+                                <button type="button" class="emoji-btn" data-emoji="😊">😊</button>
+                                <button type="button" class="emoji-btn" data-emoji="🔥">🔥</button>
+                                <button type="button" class="emoji-btn" data-emoji="⚡">⚡</button>
+                                <button type="button" class="emoji-btn" data-emoji="🚀">🚀</button>
+                                <button type="button" class="emoji-btn" data-emoji="🎯">🎯</button>
+                                <button type="button" class="emoji-btn" data-emoji="💪">💪</button>
+                                <button type="button" class="emoji-btn" data-emoji="🏆">🏆</button>
+                                <button type="button" class="emoji-btn" data-emoji="🎉">🎉</button>
+                                <button type="button" class="emoji-btn" data-emoji="🌟">🌟</button>
+                                <button type="button" class="emoji-btn" data-emoji="💫">💫</button>
+                                <button type="button" class="emoji-btn" data-emoji="🔮">🔮</button>
+                                <button type="button" class="emoji-btn" data-emoji="🎪">🎪</button>
+                                <button type="button" class="emoji-btn" data-emoji="🎭">🎭</button>
+                                <button type="button" class="emoji-btn" data-emoji="🎨">🎨</button>
+                                <button type="button" class="emoji-btn" data-emoji="🎸">🎸</button>
+                                <button type="button" class="emoji-btn" data-emoji="🎲">🎲</button>
+                                <button type="button" class="emoji-btn" data-emoji="🧠">🧠</button>
+                                <button type="button" class="emoji-btn" data-emoji="👑">👑</button>
+                                <button type="button" class="emoji-btn" data-emoji="💎">💎</button>
+                                <button type="button" class="emoji-btn" data-emoji="🌈">🌈</button>
+                            </div>
+                            <input type="hidden" id="selectedEmoji" value="😊">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-join">
+                        🎮 الانضمام للعبة
+                    </button>
+                </form>
+
+                <div class="back-home">
+                    <a href="index.html" class="btn btn-outline">العودة للصفحة الرئيسية</a>
+                </div>
+            </div>
+
+            <!-- Waiting Room Section -->
+            <div id="waitingSection" class="card waiting-card" style="display: none;">
+                <div class="waiting-header">
+                    <h2>🎯 انتظار بدء اللعبة</h2>
+                    <div class="game-info">
+                        <p><strong>اللعبة:</strong> <span id="gameTitle"></span></p>
+                        <p><strong>رمز اللعبة:</strong> <span id="displayGameCode"></span></p>
+                    </div>
+                </div>
+
+                <div class="player-info">
+                    <div class="player-card">
+                        <span class="player-emoji" id="playerEmoji">😊</span>
+                        <span class="player-name" id="playerName">لاعب</span>
+                    </div>
+                </div>
+
+                <div class="players-list">
+                    <h3>👥 اللاعبون المنضمون (<span id="playersCount">1</span>)</h3>
+                    <div id="playersList" class="players-grid">
+                        <!-- Players will be listed here -->
+                    </div>
+                </div>
+
+                <div class="waiting-animation">
+                    <div class="bouncing-dots">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                    <p>في انتظار المضيف لبدء اللعبة...</p>
+                </div>
+
+                <button class="btn btn-outline" onclick="leaveGame()">
+                    🚪 مغادرة اللعبة
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+        <p>جاري الانضمام...</p>
+    </div>
+
+    <!-- Error Modal -->
+    <div id="errorModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3>❌ خطأ!</h3>
+            <p id="errorMessage">حدث خطأ أثناء الانضمام للعبة</p>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="closeErrorModal()">موافق</button>
+            </div>
+        </div>    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/join.js"></script>
+</body>
+</html>

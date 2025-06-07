@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ديوانية الألعاب - إنشاء لعبة</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">📝 إنشاء لعبة جديدة</h1>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <form id="createGameForm" class="create-game-form">
+                <!-- Game Title Section -->
+                <div class="card">
+                    <h3>🎯 معلومات اللعبة</h3>
+                    <div class="form-group">
+                        <label for="gameTitle">عنوان المسابقة:</label>
+                        <input type="text" id="gameTitle" placeholder="مثال: تحدي المعلومات العامة" required>
+                    </div>
+                </div>
+
+                <!-- Questions Section -->
+                <div class="card">
+                    <h3>❓ الأسئلة</h3>
+                    <div id="questionsContainer">
+                        <!-- Questions will be added here dynamically -->
+                    </div>
+                    <button type="button" class="btn btn-secondary" onclick="addQuestion()">
+                        ➕ إضافة سؤال جديد
+                    </button>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-host">
+                        💾 حفظ اللعبة
+                    </button>
+                    <button type="button" class="btn btn-outline" onclick="goBack()">
+                        ↩️ العودة
+                    </button>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <!-- Question Template (Hidden) -->
+    <template id="questionTemplate">
+        <div class="question-card" data-question-index="">
+            <div class="question-header">
+                <h4>السؤال <span class="question-number"></span></h4>
+                <button type="button" class="btn-remove" onclick="removeQuestion(this)">🗑️</button>
+            </div>
+            
+            <div class="form-group">
+                <label>نص السؤال:</label>
+                <textarea class="question-text" placeholder="اكتب سؤالك هنا..." required></textarea>
+            </div>
+
+            <div class="media-upload">
+                <h5>📎 إضافة ملفات (اختياري)</h5>
+                <div class="media-buttons">
+                    <input type="file" class="file-input image-input" accept="image/*" onchange="handleMediaUpload(this, 'image')">
+                    <label class="btn btn-small">🖼️ صورة</label>
+                    
+                    <input type="file" class="file-input video-input" accept="video/*" onchange="handleMediaUpload(this, 'video')">
+                    <label class="btn btn-small">🎥 فيديو</label>
+                    
+                    <input type="file" class="file-input audio-input" accept="audio/*" onchange="handleMediaUpload(this, 'audio')">
+                    <label class="btn btn-small">🔊 صوت</label>
+                </div>
+                <div class="media-preview"></div>
+            </div>
+
+            <div class="answers-section">
+                <h5>📝 الخيارات (4 خيارات)</h5>
+                <div class="answers-grid">
+                    <div class="answer-option">
+                        <label class="answer-label option-a">أ</label>
+                        <input type="text" class="answer-input" placeholder="الخيار الأول" required>
+                        <input type="radio" name="correct-answer-" value="0">
+                    </div>
+                    <div class="answer-option">
+                        <label class="answer-label option-b">ب</label>
+                        <input type="text" class="answer-input" placeholder="الخيار الثاني" required>
+                        <input type="radio" name="correct-answer-" value="1">
+                    </div>
+                    <div class="answer-option">
+                        <label class="answer-label option-c">ج</label>
+                        <input type="text" class="answer-input" placeholder="الخيار الثالث" required>
+                        <input type="radio" name="correct-answer-" value="2">
+                    </div>
+                    <div class="answer-option">
+                        <label class="answer-label option-d">د</label>
+                        <input type="text" class="answer-input" placeholder="الخيار الرابع" required>
+                        <input type="radio" name="correct-answer-" value="3">
+                    </div>
+                </div>
+                <p class="correct-answer-hint">اختر الإجابة الصحيحة بالنقر على الدائرة المجاورة للخيار</p>
+            </div>
+        </div>
+    </template>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+        <p>جاري حفظ اللعبة...</p>    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3>🎉 تم إنشاء اللعبة بنجاح!</h3>
+            <p>رمز اللعبة: <strong id="gameCode"></strong></p>
+            <div class="modal-actions">
+                <button class="btn btn-host" onclick="startGame()">بدء اللعبة الآن</button>
+                <button class="btn btn-outline" onclick="goToHost()">العودة للوحة التحكم</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p>جاري الحفظ...</p>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/create.js"></script>
+</body>
+</html>
+</html>

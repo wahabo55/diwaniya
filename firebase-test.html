@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Connection Test</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div style="max-width: 600px; margin: 50px auto; padding: 30px; background: white; border-radius: 15px;">
+        <h1>🔥 Firebase Connection Test</h1>
+        <div id="testResults"></div>
+        <button onclick="testConnection()" style="padding: 10px 20px; margin: 10px; font-size: 16px;">Test Connection</button>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+
+    <script>
+        function testConnection() {
+            const resultsDiv = document.getElementById('testResults');
+            resultsDiv.innerHTML = '<p>Testing Firebase connection...</p>';
+
+            try {
+                // Test if Firebase is initialized
+                if (typeof firebase === 'undefined') {
+                    throw new Error('Firebase SDK not loaded');
+                }
+
+                if (!firebase.apps.length) {
+                    throw new Error('Firebase not initialized');
+                }
+
+                // Test auth service
+                if (typeof auth === 'undefined') {
+                    throw new Error('Auth service not available');
+                }
+
+                // Test database service
+                if (typeof database === 'undefined') {
+                    throw new Error('Database service not available');
+                }
+
+                // Test database connection
+                const testRef = database.ref('.info/connected');
+                testRef.on('value', function(snapshot) {
+                    if (snapshot.val() === true) {
+                        resultsDiv.innerHTML = `
+                            <div style="color: green;">
+                                <h3>✅ Firebase Connection Successful!</h3>
+                                <p>✅ Firebase SDK loaded</p>
+                                <p>✅ App initialized</p>
+                                <p>✅ Auth service ready</p>
+                                <p>✅ Database connected</p>
+                                <p><strong>Project ID:</strong> ${firebase.app().options.projectId}</p>
+                                <p><strong>Auth Domain:</strong> ${firebase.app().options.authDomain}</p>
+                            </div>
+                        `;
+                    } else {
+                        resultsDiv.innerHTML = `
+                            <div style="color: orange;">
+                                <h3>⚠️ Database Not Connected</h3>
+                                <p>Firebase is initialized but database connection failed.</p>
+                                <p>Check if Realtime Database is enabled in your Firebase project.</p>
+                            </div>
+                        `;
+                    }
+                });
+
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div style="color: red;">
+                        <h3>❌ Connection Failed</h3>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                        <p>Check the browser console for more details.</p>
+                    </div>
+                `;
+                console.error('Firebase test error:', error);
+            }
+        }
+
+        // Auto-test on page load
+        window.addEventListener('load', testConnection);
+    </script>
+</body>
+</html>

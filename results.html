@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ديوانية الألعاب - النتائج</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="results-header">
+            <h1 class="title">🏆 نتائج اللعبة</h1>
+            <p class="game-title" id="gameTitle">عنوان اللعبة</p>
+        </header>
+
+        <main class="results-content">
+            <!-- Podium Section -->
+            <div class="podium-section">
+                <h2>🥇 المتصدرون</h2>
+                <div class="podium">
+                    <div class="podium-place second-place" id="secondPlace">
+                        <div class="trophy">🥈</div>
+                        <div class="player-info">
+                            <span class="player-emoji">😊</span>
+                            <span class="player-name">المركز الثاني</span>
+                            <span class="player-score">0</span>
+                        </div>
+                        <div class="place-number">2</div>
+                    </div>
+                    
+                    <div class="podium-place first-place" id="firstPlace">
+                        <div class="trophy">🥇</div>
+                        <div class="player-info">
+                            <span class="player-emoji">🏆</span>
+                            <span class="player-name">البطل</span>
+                            <span class="player-score">0</span>
+                        </div>
+                        <div class="place-number">1</div>
+                        <div class="crown">👑</div>
+                    </div>
+                    
+                    <div class="podium-place third-place" id="thirdPlace">
+                        <div class="trophy">🥉</div>
+                        <div class="player-info">
+                            <span class="player-emoji">😊</span>
+                            <span class="player-name">المركز الثالث</span>
+                            <span class="player-score">0</span>
+                        </div>
+                        <div class="place-number">3</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Full Scoreboard -->
+            <div class="scoreboard-section">
+                <h3>📊 جدول النقاط الكامل</h3>
+                <div class="scoreboard">
+                    <div class="scoreboard-header">
+                        <span class="rank-col">الترتيب</span>
+                        <span class="player-col">اللاعب</span>
+                        <span class="score-col">النقاط</span>
+                    </div>
+                    <div id="scoreboardList" class="scoreboard-list">
+                        <!-- Scoreboard entries will be added here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Game Statistics -->
+            <div class="stats-section">
+                <h3>📈 إحصائيات اللعبة</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-value" id="totalPlayers">0</div>
+                        <div class="stat-label">إجمالي اللاعبين</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">❓</div>
+                        <div class="stat-value" id="totalQuestions">0</div>
+                        <div class="stat-label">عدد الأسئلة</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⚡</div>
+                        <div class="stat-value" id="averageTime">0</div>
+                        <div class="stat-label">متوسط الوقت (ثانية)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-value" id="accuracyRate">0%</div>
+                        <div class="stat-label">معدل الإجابات الصحيحة</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions Section -->
+            <div class="actions-section">
+                <div class="action-buttons">
+                    <button class="btn btn-host" onclick="playAgain()">
+                        🔄 لعب مرة أخرى
+                    </button>
+                    <button class="btn btn-secondary" onclick="shareResults()">
+                        📱 مشاركة النتائج
+                    </button>
+                    <button class="btn btn-outline" onclick="goHome()">
+                        🏠 العودة للصفحة الرئيسية
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Congratulations Animation -->
+    <div id="congratsAnimation" class="congrats-animation">
+        <div class="confetti"></div>
+        <div class="celebration-text">
+            <h2>🎉 مبروك للفائز! 🎉</h2>
+        </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div id="shareModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3>📱 مشاركة النتائج</h3>
+            <div class="share-content">
+                <p>انسخ النص التالي لمشاركة النتائج:</p>
+                <textarea id="shareText" readonly class="share-textarea">
+🏆 نتائج لعبة ديوانية الألعاب 🏆
+
+🥇 الفائز الأول: [اسم اللاعب] - [النقاط] نقطة
+🥈 المركز الثاني: [اسم اللاعب] - [النقاط] نقطة  
+🥉 المركز الثالث: [اسم اللاعب] - [النقاط] نقطة
+
+شكراً لجميع المشاركين! 🎮
+                </textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="copyShareText()">📋 نسخ النص</button>
+                <button class="btn btn-outline" onclick="closeShareModal()">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+        <p>جاري تحميل النتائج...</p>
+    </div>    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/results.js"></script>
+</body>
+</html>

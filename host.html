@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ديوانية الألعاب - لوحة المضيف</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">🎯 لوحة تحكم المضيف</h1>
+            <div class="user-info">
+                <span id="userEmail">مرحباً، مضيف!</span>
+                <button class="btn btn-small" onclick="logout()">خروج</button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- Login Section (shown when not authenticated) -->
+            <div id="loginSection" class="card auth-card">
+                <h2>تسجيل الدخول</h2>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="email">البريد الإلكتروني:</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">كلمة المرور:</label>
+                        <input type="password" id="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-host">تسجيل الدخول</button>
+                </form>
+                
+                <div class="auth-switch">
+                    <p>ليس لديك حساب؟ <a href="#" onclick="showRegister()">إنشاء حساب جديد</a></p>
+                </div>
+            </div>
+
+            <!-- Register Section -->
+            <div id="registerSection" class="card auth-card" style="display: none;">
+                <h2>إنشاء حساب جديد</h2>
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label for="regEmail">البريد الإلكتروني:</label>
+                        <input type="email" id="regEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regPassword">كلمة المرور:</label>
+                        <input type="password" id="regPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn-host">إنشاء الحساب</button>
+                </form>
+                
+                <div class="auth-switch">
+                    <p>لديك حساب بالفعل؟ <a href="#" onclick="showLogin()">تسجيل الدخول</a></p>
+                </div>
+            </div>
+
+            <!-- Dashboard Section (shown when authenticated) -->
+            <div id="dashboardSection" style="display: none;">
+                <div class="dashboard-grid">
+                    <div class="card credits-card">
+                        <h3>💰 الرصيد المتاح</h3>
+                        <div class="credits-display">
+                            <span id="creditsCount">10</span>
+                            <span class="credits-label">نقطة</span>
+                        </div>
+                        <button class="btn btn-secondary" onclick="buyCredits()">شراء نقاط إضافية</button>
+                    </div>
+
+                    <div class="card actions-card">
+                        <h3>🎮 إجراءات اللعبة</h3>
+                        <div class="button-group">
+                            <button class="btn btn-host" onclick="createNewGame()" id="createGameBtn">
+                                إنشاء لعبة جديدة (2 نقاط)
+                            </button>
+                            <button class="btn btn-secondary" onclick="viewMyGames()">
+                                عرض ألعابي السابقة
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card games-list">
+                    <h3>🎯 ألعابي</h3>
+                    <div id="gamesList">
+                        <p class="no-games">لم تقم بإنشاء أي ألعاب بعد</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="back-home">
+                <a href="index.html" class="btn btn-outline">العودة للصفحة الرئيسية</a>
+            </div>
+        </main>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+        <p>جاري التحميل...</p>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/host.js"></script>
+</body>
+</html>
